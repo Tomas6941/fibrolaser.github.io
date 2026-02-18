@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FibroLaser - Corte Láser de Precisión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #3e2c1f;
+            background-color: #faf3e8;
+            overflow-x: hidden;
+        }
+
+        /* Header y Navegación */
+        header {
+            background: linear-gradient(135deg, #5d3a1a, #8b5a2b);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(93, 58, 26, 0.3);
+            border-bottom: 3px solid #c49a6c;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        header.hidden {
+            transform: translateY(-100%);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f5e6d3;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links li {
+            animation: fadeInDown 1s ease;
+            animation-fill-mode: both;
+        }
+
+        .nav-links li:nth-child(1) { animation-delay: 0.1s; }
+        .nav-links li:nth-child(2) { animation-delay: 0.2s; }
+        .nav-links li:nth-child(3) { animation-delay: 0.3s; }
+
+        .nav-links a {
+            color: #f5e6d3;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: #c49a6c;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover {
+            background-color: #c49a6c;
+            color: #3e2c1f;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(93, 58, 26, 0.8), rgba(139, 90, 43, 0.7)), url('https://virmer.com/assets/files/img/articles/Laser%20engraver/laser-head-2-1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #faf3e8;
+            padding: 0 2rem;
+        }
+
+        .hero-content {
+            animation: scaleIn 1.5s ease;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            animation: slideInLeft 1s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: slideInRight 1s ease 0.3s both;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: #c49a6c;
+            color: #3e2c1f;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: 2px solid #8b5a2b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: bounceIn 1s ease 0.6s both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            background-color: #d4b08c;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Sección Servicios */
+        .services {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #5d3a1a;
+            text-shadow: 2px 2px 4px rgba(201, 151, 90, 0.3);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "🌲";
+            font-size: 2rem;
+            display: block;
+            margin-top: 10px;
+            animation: rotate 10s linear infinite;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: #f5e6d3;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(93, 58, 26, 0.2);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #c49a6c;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .service-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(93, 58, 26, 0.4);
+        }
+
+        .service-img {
+            height: 200px;
+            background-color: #8b5a2b;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 3px solid #c49a6c;
+            transition: transform 0.5s ease;
+        }
+
+        .service-card:hover .service-img {
+            transform: scale(1.1);
+        }
+
+        .service-content {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-content h3 {
+            margin-bottom: 1rem;
+            color: #5d3a1a;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .service-card:hover .service-content h3 {
+            color: #8b5a2b;
+        }
+
+        /* Servicio Personalizado - Destacado */
+        .service-card.personalizado {
+            background: linear-gradient(135deg, #f5e6d3, #d4b08c);
+            border: 2px solid #8b5a2b;
+            transform: scale(1.02);
+            grid-column: span 3;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .service-card.personalizado .service-content h3 {
+            font-size: 1.8rem;
+            color: #5d3a1a;
+        }
+
+        .service-card.personalizado::before {
+            content: "✨";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 2rem;
+            background: #8b5a2b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        /* Sección Contacto */
+        .contact {
+            background: linear-gradient(135deg, #d4b08c, #f5e6d3);
+            padding: 5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(196, 154, 108, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-form {
+            background: #faf3e8;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(93, 58, 26, 0.2);
+            border: 2px solid #c49a6c;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .contact-form.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #5d3a1a;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #c49a6c;
+            border-radius: 10px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            color: #3e2c1f;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group input:hover,
+        .form-group textarea:hover,
+        .form-group select:hover {
+            border-color: #8b5a2b;
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #a87b54;
+            opacity: 0.7;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #8b5a2b, #5d3a1a);
+            color: #f5e6d3;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border: 2px solid #c49a6c;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #c49a6c, #8b5a2b);
+            color: #3e2c1f;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(93, 58, 26, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Contact Info */
+        .contact-info {
+            margin-top: 3rem;
+            text-align: center;
+            background: #f5e6d3;
+            padding: 1.5rem;
+            border-radius: 15px;
+            color: #3e2c1f;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+            border: 1px solid #c49a6c;
+        }
+
+        .contact-info.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contact-info p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .contact-info a {
+            color: #5d3a1a;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .contact-info a:hover {
+            color: #8b5a2b;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #3e2c1f, #5d3a1a);
+            color: #f5e6d3;
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid #c49a6c;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        footer.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* WhatsApp Float */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            line-height: 60px;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s;
+            border: 3px solid #f5e6d3;
+            animation: pulse 2s infinite;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+            animation: none;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 25px;
+                line-height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .service-card.personalizado {
+                grid-column: span 1;
+            }
+
+            .contact-form {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Ajuste para móviles muy pequeños */
+        @media (max-width: 480px) {
+            .services {
+                padding: 3rem 1rem;
+            }
+            
+            .contact {
+                padding: 3rem 1rem;
+            }
+            
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.7rem;
+            }
+        }
+
+        /* Efecto cascada para servicios */
+        .service-card:nth-child(1).visible { transition-delay: 0.1s; }
+        .service-card:nth-child(2).visible { transition-delay: 0.2s; }
+        .service-card:nth-child(3).visible { transition-delay: 0.3s; }
+        .service-card:nth-child(4).visible { transition-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <header id="header">
+        <nav>
+            <div class="logo">FibroLaser</div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h1>Corte Láser de Precisión</h1>
+            <p>Transformamos tus ideas en realidad con tecnología de vanguardia</p>
+            <a href="#contacto" class="btn">Solicitar Presupuesto</a>
+        </div>
+    </section>
+
+    <section id="servicios" class="services">
+        <h2 class="section-title">Nuestros Servicios</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://dattaimagen.com/wp-content/uploads/2024/02/CORTE-LASER-GUADALAJARAA.jpg')"></div>
+                <div class="service-content">
+                    <h3>Corte Láser en Madera</h3>
+                    <p>Corte preciso en MDF, terciado y maderas macizas para maquetas, letreros y decoración.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://lasercutperu.com/wp-content/uploads/2022/04/TIPOS-DE-ACRILICO-PARA-CORTES-Y-GRABADOS-LASER.jpg')"></div>
+                <div class="service-content">
+                    <h3>Corte en Acrílico</h3>
+                    <p>Letreros luminosos, displays y piezas decorativas en acrílico de alta calidad.</p>
+                </div>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://laserhouse.com.ar/wp-content/uploads/2020/10/corte-grabado-laser-02.jpg')"></div>
+                <div class="service-content">
+                    <h3>Grabados Personalizados</h3>
+                    <p>Grabado láser en diversos materiales para regalos empresariales y personales.</p>
+                </div>
+            </div>
+
+            <!-- Nuevo servicio: Servicio Personalizado -->
+            <div class="service-card personalizado">
+                <div class="service-img" style="background-image: url('https://i.ytimg.com/vi/jHQkxDxM28w/maxresdefault.jpg')"></div>
+                <div class="service-content">
+                    <h3>🎨 Servicio Personalizado</h3>
+                    <p>¿Tienes una idea única? Diseñamos y creamos piezas exclusivas según tus necesidades. Desde regalos corporativos hasta proyectos especiales, hacemos realidad tu visión.</p>
+                    <p><strong>✓ Asesoría personalizada</strong><br>
+                    <strong>✓ Diseño a medida</strong><br>
+                    <strong>✓ Prototipado rápido</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="contact">
+        <div class="contact-container">
+            <h2 class="section-title">Contáctanos</h2>
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre completo *</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono *</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="+54 9 351 264 8793" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="servicio">Servicio de interés</label>
+                        <select id="servicio" name="servicio">
+                            <option value="Corte en Madera">Corte en Madera</option>
+                            <option value="Corte en Acrílico">Corte en Acrílico</option>
+                            <option value="Grabados">Grabados</option>
+                            <option value="Servicio Personalizado">🎨 Servicio Personalizado</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje *</label>
+                        <textarea id="mensaje" name="mensaje" placeholder="Escribe tu consulta aquí..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Enviar por WhatsApp</button>
+                </form>
+            </div>
+            
+            <div class="contact-info">
+                <p>📍 Dirección: Tristan Narvaja 1015 - Barrio San Vicente</p>
+                <p>📞 Teléfono: <a href="tel:+5493512648793">+54 9 3512 64-8793</a></p>
+                <p>⏰ Horario: Lunes a Viernes 9:00 - 18:00</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Botón flotante de WhatsApp -->
+    <a href="https://wa.me/5493512648793?text=Hola%20FibroLaser!%20Quisiera%20consultar%20por%20sus%20servicios%20de%20corte%20l%C3%A1ser" 
+       class="whatsapp-float" 
+       target="_blank"
+       title="Contáctanos por WhatsApp">
+        📱
+    </a>
+
+    <footer>
+        <p>&copy; 2024 FibroLaser - Todos los derechos reservados</p>
+    </footer>
+
+    <!-- Script para animaciones y formulario -->
+    <script>
+        // Smooth scroll para los enlaces del menú
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer para animaciones en cascada
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Efecto cascada para los servicios
+                    if (entry.target.classList.contains('service-card')) {
+                        const index = Array.from(document.querySelectorAll('.service-card')).indexOf(entry.target);
+                        entry.target.style.transitionDelay = `${index * 0.1}s`;
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observar todos los elementos que queremos animar
+        document.querySelectorAll('.service-card, .contact-form, .contact-info, footer').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Header hide/show on scroll
+        let lastScroll = 0;
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            // Header hide/show
+            if (currentScroll <= 0) {
+                header.classList.remove('hidden');
+            } else if (currentScroll > lastScroll && currentScroll > 100) {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // Formulario WhatsApp
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar que los campos no estén vacíos
+            const nombre = document.getElementById('nombre').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const mensaje = document.getElementById('mensaje').value.trim();
+            
+            if (!nombre || !email || !telefono || !mensaje) {
+                alert('Por favor, completa todos los campos requeridos.');
+                return;
+            }
+            
+            // Validar email básico
+            if (!email.includes('@') || !email.includes('.')) {
+                alert('Por favor, ingresa un email válido.');
+                return;
+            }
+            
+            const servicio = document.getElementById('servicio').value;
+            
+            const numeroWhatsApp = '5493512648793';
+            
+            const textoWhatsApp = `Hola FibroLaser! 👋
+            
+📝 *Nuevo mensaje desde la web:*
+
+*Nombre:* ${nombre}
+*Email:* ${email}
+*Teléfono:* ${telefono}
+*Servicio de interés:* ${servicio}
+
+*Mensaje:* 
+${mensaje}
+
+¡Espero su respuesta!`;
+            
+            const textoCodificado = encodeURIComponent(textoWhatsApp);
+            const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${textoCodificado}`;
+            
+            window.open(urlWhatsApp, '_blank');
+            
+            // Animación de éxito
+            const btn = document.querySelector('.submit-btn');
+            btn.style.transform = 'scale(0.95)';
+            btn.style.backgroundColor = '#4CAF50';
+            
+            setTimeout(() => {
+                btn.style.transform = 'scale(1)';
+                btn.style.backgroundColor = '';
+            }, 200);
+            
+            // Opcional: Mostrar mensaje de éxito
+            alert('¡Gracias por contactarnos! Serás redirigido a WhatsApp.');
+            
+            // Limpiar el formulario (opcional)
+            // this.reset();
+        });
+
+        // Placeholder dinámico para el teléfono
+        const telefonoInput = document.getElementById('telefono');
+        telefonoInput.addEventListener('focus', function() {
+            if (!this.value) {
+                this.placeholder = 'Ej: 3512648793';
+            }
+        });
+        
+        telefonoInput.addEventListener('blur', function() {
+            if (!this.value) {
+                this.placeholder = '+54 9 351 264 8793';
+            }
+        });
+
+        console.log('Página cargada correctamente');
+    </script>
+</body>
+</html>
